@@ -1,14 +1,15 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 
-# Conexão com MongoDB local
+# Conexão com MongoDB local (ou ajuste para Atlas se for usar online)
 client = MongoClient('mongodb://localhost:27017/')
-db = client['shina_db']              # nome do banco de dados
-sensores = db['sensores']            # coleção para dados dos sensores
-configuracao = db['configuracao']    # coleção para parâmetros/configuração
+db = client['shina_db']            # nome do banco de dados
+sensores = db['sensores']          # coleção para dados dos sensores
+configuracao = db['configuracao']  # coleção para parâmetros/configuração
 
 # Rota para receber e salvar dados dos sensores via POST
 @app.route('/api/sensores', methods=['POST'])
@@ -52,6 +53,7 @@ def recomendar_acoes():
         mensagem = "Tudo dentro dos parâmetros ideais!"
     return jsonify({"recomendacao": mensagem}), 200
 
-
+# ---- ESTE BLOCO VAI EXATAMENTE NO FINAL ----
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8080, debug=True)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)
